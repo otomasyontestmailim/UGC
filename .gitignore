@@ -12,6 +12,9 @@ mini-app/data/jobs.json
 mini-app/uploads/
 *.log
 
+# --- Vercel ---
+.vercel/
+
 # --- OS ---
 .DS_Store
 Thumbs.db

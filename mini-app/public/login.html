@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Giriş — UGC Video Studio</title>
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="login-body">
+<div class="login-card">
+  <div class="brand" style="justify-content:center;margin-bottom:18px;">
+    <span class="logo">🎬</span>
+    <span>UGC Video Studio</span>
+  </div>
+  <h2 style="text-align:center;margin:0 0 18px;">Admin Girişi</h2>
+  <form id="loginForm">
+    <label>Kullanıcı adı
+      <input id="username" type="text" autocomplete="username" autofocus />
+    </label>
+    <label>Şifre
+      <input id="password" type="password" autocomplete="current-password" />
+    </label>
+    <button type="submit" class="primary" id="loginBtn">Giriş yap</button>
+    <div id="loginMsg" class="msg"></div>
+  </form>
+</div>
+<script>
+const form = document.getElementById('loginForm');
+const msg = document.getElementById('loginMsg');
+const btn = document.getElementById('loginBtn');
+
+// Zaten girişliyse panele git
+fetch('/api/me').then(r => { if (r.ok) location.href = '/'; });
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  msg.textContent = ''; msg.className = 'msg';
+  btn.disabled = true; btn.textContent = 'Giriş yapılıyor…';
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: document.getElementById('username').value.trim(),
+        password: document.getElementById('password').value
+      })
+    });
+    const j = await r.json();
+    if (r.ok && j.ok) { location.href = '/'; }
+    else { msg.className = 'msg error'; msg.textContent = j.error || 'Giriş başarısız'; }
+  } catch (err) {
+    msg.className = 'msg error'; msg.textContent = err.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Giriş yap';
+  }
+});
+</script>
+</body>
+</html>
