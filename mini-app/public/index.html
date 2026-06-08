@@ -68,6 +68,7 @@
 
     <label>Ürün görseli (opsiyonel)
       <input id="image" type="file" accept="image/*" />
+      <img id="imagePreview" class="image-preview" alt="önizleme" hidden />
       <small id="imageStatus" class="hint"></small>
     </label>
 
@@ -99,6 +100,8 @@
     fal.ai üzerinden çalışır. API key <code>.env</code>'den okunur.
   </small>
 </footer>
+
+<div id="toast-container" class="toast-container"></div>
 
 <script src="/app.js"></script>
 </body>
