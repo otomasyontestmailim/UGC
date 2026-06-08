@@ -90,8 +90,15 @@ els.image.addEventListener('change', async () => {
   uploadedImageUrl = null;
   els.imageStatus.textContent = 'Yükleniyor…';
   syncProduceBtn();
+  // Görseli beyaz zemine düzleştirip JPEG'e çevir: saydam (alfa kanallı) PNG'ler
+  // Veo image-to-video tarafından reddediliyor ("did not generate the expected output").
+  let uploadFile = f, uploadName = f.name;
+  try {
+    const jpg = await fileToJpegBlob(f);
+    if (jpg) { uploadFile = jpg; uploadName = (f.name.replace(/\.[^.]+$/, '') || 'gorsel') + '.jpg'; }
+  } catch {}
   const fd = new FormData();
-  fd.append('file', f);
+  fd.append('file', uploadFile, uploadName);
   try {
     const r = await fetch('/api/upload', { method: 'POST', body: fd }).then(guard);
     const j = await r.json();
@@ -104,6 +111,30 @@ els.image.addEventListener('change', async () => {
     syncProduceBtn();
   }
 });
+
+// Görseli beyaz zemin üzerine çizip JPEG blob'una çevirir (alfa/saydamlık kaldırılır).
+function fileToJpegBlob(file) {
+  return new Promise((resolve) => {
+    if (!file || !file.type.startsWith('image/')) return resolve(null);
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(b => resolve(b), 'image/jpeg', 0.92);
+      } catch { URL.revokeObjectURL(url); resolve(null); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+    img.src = url;
+  });
+}
 
 function setPreview(file) {
   if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
