@@ -31,9 +31,26 @@ if (missing.length) {
   if (require.main === module) process.exit(1);
 }
 
-const supabase = createClient(SUPABASE_URL || 'http://localhost', SUPABASE_SERVICE_ROLE_KEY || 'none', {
-  auth: { persistSession: false, autoRefreshToken: false }
-});
+// SUPABASE_URL'i normalize et: çevredeki tırnak/boşlukları at, şema yoksa https:// ekle.
+// (Geçersiz URL createClient'i throw ettirir ve tüm serverless fonksiyonu çökertir → 500.)
+function normalizeSupabaseUrl(u) {
+  let s = String(u || '').trim().replace(/^['"]+|['"]+$/g, '').trim();
+  if (s && !/^https?:\/\//i.test(s)) s = 'https://' + s;
+  return s;
+}
+
+let supabaseConfigError = null;
+let supabase;
+try {
+  supabase = createClient(normalizeSupabaseUrl(SUPABASE_URL) || 'http://localhost', SUPABASE_SERVICE_ROLE_KEY || 'none', {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+} catch (e) {
+  // Modül yüklemesini çökertme; route'lar net bir hata döndürsün.
+  supabaseConfigError = e.message;
+  console.error('[supabase] createClient hatası:', e.message);
+  supabase = createClient('http://localhost', 'none', { auth: { persistSession: false, autoRefreshToken: false } });
+}
 
 // === Şifre hashleme (scrypt, ek paket yok) ===
 function hashPassword(pw) {
@@ -206,7 +223,14 @@ function requireAuth(req, res, next) {
 }
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, fal: FAL_KEY ? 'present' : 'missing', supabase: SUPABASE_SERVICE_ROLE_KEY ? 'present' : 'missing' });
+  res.json({
+    ok: true,
+    fal: FAL_KEY ? 'present' : 'missing',
+    supabase: SUPABASE_SERVICE_ROLE_KEY ? 'present' : 'missing',
+    supabaseUrl: SUPABASE_URL ? 'present' : 'missing',
+    authSecret: AUTH_SECRET ? 'present' : 'missing',
+    configError: supabaseConfigError || null
+  });
 });
 
 app.post('/api/login', async (req, res) => {
