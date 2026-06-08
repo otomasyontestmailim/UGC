@@ -1,0 +1,15 @@
+{
+  "name": "ugc-video-studio-deploy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Repo-root deploy wrapper for the UGC Video Studio mini-app (Vercel reads mini-app/api/index.js via vercel.json).",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}

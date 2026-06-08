@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "mini-app/api/index.js",
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["mini-app/public/**"] }
+    }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "mini-app/api/index.js" }
+  ]
+}
