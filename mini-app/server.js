@@ -358,7 +358,17 @@ app.post('/api/jobs/:id/refresh', requireAuth, async (req, res) => {
       if (st.status === 'COMPLETED') {
         const r = await falResult(job.endpoint, job.request_id);
         if (!r.ok) {
-          if (r.status === 422) return res.json(await patch({ status: 'rejected', error: 'Prompt reddedildi (içerik/format). Para kesilmedi. Promptu sadeleştir.' }));
+          if (r.status === 422) {
+            // fal'ın gerçek ret sebebini çıkar (içerik moderasyonu / format hatası).
+            let detail = '';
+            try {
+              const j = JSON.parse(String(r.body));
+              detail = typeof j.detail === 'string' ? j.detail
+                : Array.isArray(j.detail) ? j.detail.map(d => d.msg || d.type || '').filter(Boolean).join('; ')
+                : JSON.stringify(j);
+            } catch { detail = String(r.body); }
+            return res.json(await patch({ status: 'rejected', error: `İçerik/format reddedildi (para kesilmedi). fal: ${String(detail).slice(0, 240) || 'detay yok'}` }));
+          }
           if (r.status === 500) return res.json(await patch({ status: 'mcp_error', error: 'Video üretildi ama sonuç alınamadı. fal.ai/dashboard/requests adresinden kontrol et.' }));
           return res.json(await patch({ status: 'error', error: `Sonuç ${r.status}: ${String(r.body).slice(0, 150)}` }));
         }
