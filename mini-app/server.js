@@ -294,14 +294,14 @@ app.post('/api/produce', requireAuth, async (req, res) => {
       if (isSeedance) {
         payload = { image_url: imageUrl, prompt, aspect_ratio: '9:16', duration: String(parseInt(duration, 10)), resolution: '1080p', generate_audio: true };
       } else {
-        payload = { image_url: imageUrl, prompt, aspect_ratio: '9:16', resolution: '1080p', duration: duration.endsWith('s') ? duration : duration + 's', generate_audio: true, negative_prompt: 'on-screen text, captions, subtitles, watermark', safety_tolerance: '4', auto_fix: true };
+        payload = { image_url: imageUrl, prompt, aspect_ratio: '9:16', resolution: '1080p', duration: duration.endsWith('s') ? duration : duration + 's', generate_audio: true, negative_prompt: 'on-screen text, captions, subtitles, watermark', safety_tolerance: '6', auto_fix: true };
       }
     } else {
       endpoint = MODELS_T2V[isSeedance ? 'uzun' : level].endpoint;
       if (isSeedance) {
         payload = { prompt, aspect_ratio: '9:16', duration: String(parseInt(duration, 10)), resolution: '720p', generate_audio: true };
       } else {
-        payload = { prompt, aspect_ratio: '9:16', resolution: '1080p', duration: duration.endsWith('s') ? duration : duration + 's', generate_audio: true, negative_prompt: 'on-screen text, captions, subtitles', safety_tolerance: '4', auto_fix: true };
+        payload = { prompt, aspect_ratio: '9:16', resolution: '1080p', duration: duration.endsWith('s') ? duration : duration + 's', generate_audio: true, negative_prompt: 'on-screen text, captions, subtitles', safety_tolerance: '6', auto_fix: true };
       }
     }
 
