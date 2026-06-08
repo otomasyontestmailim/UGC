@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>UGC Video Studio — Local</title>
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<header>
+  <div class="brand">
+    <span class="logo">🎬</span>
+    <span>UGC Video Studio <em>local</em></span>
+  </div>
+  <div id="health" class="health">…</div>
+</header>
+
+<main>
+  <section class="panel form-panel">
+    <h2>Yeni üretim</h2>
+
+    <label>Ürün / marka *
+      <input id="product" type="text" placeholder="Örn: Glowly yüz serumu" />
+    </label>
+
+    <label>Öne çıkacak fayda
+      <input id="benefit" type="text" placeholder="Örn: kuru cildi 3 haftada parlatır" />
+    </label>
+
+    <div class="row">
+      <label class="grow">Tarz
+        <select id="style">
+          <option value="samimi-itiraf">Samimi İtiraf (varsayılan)</option>
+          <option value="heyecanli-kesif">Heyecanlı Keşif</option>
+          <option value="problem-cozum">Problem–Çözüm</option>
+          <option value="sokak-roportaji">Sokak Röportajı</option>
+          <option value="luks-estetik">Lüks / Estetik</option>
+          <option value="komik-eglenceli">Komik / Eğlenceli</option>
+          <option value="uzman-tavsiyesi">Uzman Tavsiyesi</option>
+          <option value="once-sonra">Önce–Sonra</option>
+        </select>
+      </label>
+
+      <label>Süre
+        <select id="duration">
+          <option value="4s">4 sn</option>
+          <option value="6s">6 sn</option>
+          <option value="8s" selected>8 sn</option>
+          <option value="10">10 sn (uzun)</option>
+          <option value="12">12 sn (uzun)</option>
+          <option value="15">15 sn (uzun)</option>
+        </select>
+      </label>
+    </div>
+
+    <label>Kalite seviyesi
+      <select id="level">
+        <option value="ekonomik">Ekonomik (~$0.40 / 8sn)</option>
+        <option value="standart" selected>Standart (~$1.20 / 8sn)</option>
+        <option value="premium">Premium (~$3.20 / 8sn)</option>
+      </select>
+      <small class="hint">9 sn ve üstü süreler otomatik olarak "Uzun" (Seedance) moduna geçer.</small>
+    </label>
+
+    <label>Ürün görseli (opsiyonel)
+      <input id="image" type="file" accept="image/*" />
+      <small id="imageStatus" class="hint"></small>
+    </label>
+
+    <label>Diyalog (opsiyonel — boşsa AI yazar)
+      <textarea id="dialog" rows="3" placeholder="Örn: Cildim hep matlaşıyordu. Bunu 3 haftadır kullanıyorum — sabah aynaya bakmak keyif artık."></textarea>
+    </label>
+
+    <div class="cost-box">
+      <span>Tahmini maliyet:</span>
+      <strong id="costTotal">$1.21</strong>
+      <small id="costBreakdown">video $1.20 + altyazı $0.01</small>
+    </div>
+
+    <button id="produceBtn" class="primary">Üret</button>
+    <div id="produceMsg" class="msg"></div>
+  </section>
+
+  <section class="panel jobs-panel">
+    <h2>Üretimler</h2>
+    <div id="jobs" class="jobs">
+      <div class="empty">Henüz üretim yok. Sol taraftan başla.</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <small>
+    Modeller: Veo 3.1 (Lite/Fast/Standart), Seedance 2.0 Fast, auto-subtitle.
+    fal.ai üzerinden çalışır. API key <code>.env</code>'den okunur.
+  </small>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>

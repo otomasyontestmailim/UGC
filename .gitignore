@@ -1,0 +1,17 @@
+# --- Gizli / hassas ---
+.env
+*.env
+!*.env.example
+.claude/settings.local.json
+
+# --- Bağımlılıklar ---
+node_modules/
+
+# --- Runtime / üretilen veriler ---
+mini-app/data/jobs.json
+mini-app/uploads/
+*.log
+
+# --- OS ---
+.DS_Store
+Thumbs.db
